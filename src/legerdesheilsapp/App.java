@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
  *
  * @author User
  */
-public class LegerDesHeilsApp {
+public class App {
 
     /**
      * @param args the command line arguments
