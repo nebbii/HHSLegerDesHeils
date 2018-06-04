@@ -10,5 +10,13 @@ package app;
  * @author Ben
  */
 public class Handler {
+    String conn;
+    String usr;
+    String pwd;
     
+    public Handler(String c, String u, String p) {
+        conn    = c;
+        usr     = u;
+        pwd     = p;
+    }
 }
