@@ -50,7 +50,7 @@ public class App {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                applicatieldh.CheckDB db = new applicatieldh.CheckDB();
+                Handler db = new Handler(conn, usr, pwd);
             }
         }
         
