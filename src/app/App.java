@@ -37,7 +37,7 @@ public class App {
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
         
         JFrame jf = new JFrame();
-        jf.setSize(1920, 1080);
+        jf.setSize(640, 480);
         jf.setTitle("Check fouten in DB");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -73,7 +73,7 @@ public class App {
      * @return Document
      */
     private static Document getParameters() throws ParserConfigurationException, SAXException, IOException {
-        File parameters = new File("src\\legerdesheilsapp\\DBParameters.xml");
+        File parameters = new File("src\\app\\DBParameters.xml");
         DocumentBuilderFactory documentBuilderFactory = 
                 DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = 
