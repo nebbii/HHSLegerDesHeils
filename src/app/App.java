@@ -61,7 +61,6 @@ public class App {
         
         jf.add(p);
         jf.setVisible(true);
-        
     }
      
     /**
