@@ -19,7 +19,7 @@ public class Handler {
     String pass;
     
     public Handler(String connectString, String usr, String pwd) {
-        String connectionString = connectString;
+        String connectionString = connectString+";"+usr+";"+pwd;
         try {
             Connection conn = DriverManager.getConnection(connectionString);
 
