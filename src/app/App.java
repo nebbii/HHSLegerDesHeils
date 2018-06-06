@@ -36,31 +36,7 @@ public class App {
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
         
-        JFrame jf = new JFrame();
-        jf.setSize(640, 480);
-        jf.setTitle("Check fouten in DB");
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        JPanel p = new JPanel();
-        p.setLayout(new GridLayout(1, 3));//gridlayout moet nog veranderd worden.
-        
-        JButton toonMax = new JButton("check foutive gegevens");
-        
-        class Listener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Handler db = new Handler(conn, usr, pwd);
-            }
-        }
-        
-        ActionListener Listener = new Listener();
-        toonMax.addActionListener(Listener);
-       
-        p.add(toonMax);
-        
-        jf.add(p);
-        jf.setVisible(true);
     }
      
     /**
