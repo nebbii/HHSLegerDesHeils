@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -32,11 +34,12 @@ public class App {
     public static void main(String[] args) throws Exception {
         // get parameters
         Document document = getParameters();
-        String conn = document.getElementsByTagName("ConnectString").item(0).getTextContent();
-        String usr = document.getElementsByTagName("Username").item(0).getTextContent();
-        String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
-        
-        
+        String connUrl = document.getElementsByTagName("ConnectString").item(0).getTextContent();
+
+        // start connection
+        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        Connection connection = DriverManager.getConnection(connUrl);
+        System.out.println("Connection made");
     }
      
     /**

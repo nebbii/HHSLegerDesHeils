@@ -20,3 +20,5 @@ hs_err_pid*
 DBParameters.xml
 /nbproject/private/
 /build/
+
+*.swp
