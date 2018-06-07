@@ -8,16 +8,17 @@ package app;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.io.File;
+import java.io.IOException;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import java.sql.*;
+import java.util.*;
 
 /**
  *
@@ -27,6 +28,7 @@ public class App {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
         // get parameters
@@ -34,21 +36,37 @@ public class App {
         String conn = document.getElementsByTagName("ConnectString").item(0).getTextContent();
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
+        Scanner sc = new Scanner(System.in);
+        
+        String state;
         
         try {
+            state = "login_start";
+            
             // get connection
             Connection myConn = DriverManager.getConnection(conn, usr, pwd);
             
-            // create statement
+            // get login users
             Statement myStmt = myConn.createStatement();
             
-            // execute SQL query
-            ResultSet myRs = myStmt.executeQuery("select * from Persoon");
-            
-            // process result set
-            while(myRs.next()) {
-                System.out.println(myRs.getString("naam"));
+            System.out.println("Leger Des Heils DB Programma:");
+            System.out.println("Vul in uw gebruikersnaam:");
+            while(state.equals("login_start") && sc.hasNextLine()) {
+                String user = sc.nextLine();
+                String sql = "select * from gebruikers where user='"+user+"'";
+                ResultSet myRs = myStmt.executeQuery(sql);
+                
+                // check if user exists
+                if(myRs.next()) {
+                    System.out.println("User found!");
+                    state = "login_success";
+                } else {
+                    System.out.println("No user found.");
+                }
             }
+            
+            System.out.println("End of Program");
+            
         }
         catch (Exception exc) {
             exc.printStackTrace();

@@ -5,29 +5,24 @@
  */
 package app;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  *
  * @author Ben
  */
 public class Handler {
-    String connectString;
+    String conn;
     String user;
     String pass;
     
-    public Handler(String connectString, String usr, String pwd) {
-        String connectionString = connectString;
+    public Handler(String conn, String usr, String pwd) {
         try {
-            Connection conn = DriverManager.getConnection(connectionString);
-
-            System.out.println("verbinding gemaakt...");
-            conn.close();
-        } catch (SQLException e) {
-            System.out.println("Fout: SQL-server is niet beschikbaar!");
-
+            // get connection
+            Connection myConn = DriverManager.getConnection(conn, usr, pwd);
+        }
+        catch (Exception exc) {
+            exc.printStackTrace();
         }
     }
 }
