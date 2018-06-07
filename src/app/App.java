@@ -36,6 +36,7 @@ public class App {
         String conn = document.getElementsByTagName("ConnectString").item(0).getTextContent();
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
+        
         Scanner sc = new Scanner(System.in);
         
         String state;
@@ -49,24 +50,52 @@ public class App {
             // get login users
             Statement myStmt = myConn.createStatement();
             
-            System.out.println("Leger Des Heils DB Programma:");
-            System.out.println("Vul in uw gebruikersnaam:");
-            while(state.equals("login_start") && sc.hasNextLine()) {
-                String user = sc.nextLine();
-                String sql = "select * from gebruikers where user='"+user+"'";
-                ResultSet myRs = myStmt.executeQuery(sql);
-                
-                // check if user exists
-                if(myRs.next()) {
-                    System.out.println("User found!");
-                    state = "login_success";
-                } else {
-                    System.out.println("No user found.");
+            String user = null;
+            String pin = null;
+            String sql = null;
+            
+            while(state!=null) {
+                switch(state) {
+                    case "login_start":
+                        System.out.println("Leger Des Heils DB Programma:");
+                        System.out.println("Vul in uw gebruikersnaam:");
+                        while(sc.hasNextLine() && state.equals("login_start")) {
+                            user = sc.nextLine();
+                            sql = "select * from gebruikers where user='"+user+"'";
+                            ResultSet myRs = myStmt.executeQuery(sql);
+
+                            // check if user exists
+                            if(myRs.next()) {
+                                state = "login_pass";
+                                System.out.println("Vul uw pincode in:");
+                            } else {
+                                System.out.println("No user found.");
+                            }
+                        }
+                        break;
+                    case "login_pass":
+                        System.out.println("Vul uw pincode in:");
+                        while(sc.hasNextLine() && state.equals("login_pass")) {
+                            pin = sc.nextLine();
+                            sql = "select * from gebruikers where"
+                                    + " user='"+user+"'"
+                                    + " AND pin='"+pin+"'";
+                            ResultSet myRs = myStmt.executeQuery(sql);
+
+                            // check if user exists
+                            if(myRs.next()) {
+                                // user found
+                                state = "login_success";
+                                System.out.println("Login success!");
+                            } else {
+                                System.out.println("Password wrong.");
+                            }
+                        }
+                        break;
+                    default:
+                        System.out.println("End of program");
                 }
             }
-            
-            System.out.println("End of Program");
-            
         }
         catch (Exception exc) {
             exc.printStackTrace();
