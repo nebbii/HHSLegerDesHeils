@@ -16,9 +16,8 @@ import javax.swing.JPanel;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.SQLException;
+
+import java.sql.*;
 
 /**
  *
@@ -36,31 +35,24 @@ public class App {
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
         
-        JFrame jf = new JFrame();
-        jf.setSize(640, 480);
-        jf.setTitle("Check fouten in DB");
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        JPanel p = new JPanel();
-        p.setLayout(new GridLayout(1, 3));//gridlayout moet nog veranderd worden.
-        
-        JButton toonMax = new JButton("check foutive gegevens");
-        
-        class Listener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Handler db = new Handler(conn, usr, pwd);
+        try {
+            // get connection
+            Connection myConn = DriverManager.getConnection(conn, usr, pwd);
+            
+            // create statement
+            Statement myStmt = myConn.createStatement();
+            
+            // execute SQL query
+            ResultSet myRs = myStmt.executeQuery("select * from Persoon");
+            
+            // process result set
+            while(myRs.next()) {
+                System.out.println(myRs.getString("naam"));
             }
         }
-        
-        ActionListener Listener = new Listener();
-        toonMax.addActionListener(Listener);
-       
-        p.add(toonMax);
-        
-        jf.add(p);
-        jf.setVisible(true);
+        catch (Exception exc) {
+            exc.printStackTrace();
+        }
         
     }
      
