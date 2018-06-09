@@ -54,11 +54,12 @@ public class App {
             String pin = null;
             String sql = null;
             
-            while(state!=null) {
+            while(!state.equals("program_end")) {
                 switch(state) {
                     case "login_start":
                         System.out.println("Leger Des Heils DB Programma:");
                         System.out.println("Vul in uw gebruikersnaam:");
+                        
                         while(sc.hasNextLine() && state.equals("login_start")) {
                             user = sc.nextLine();
                             sql = "select * from gebruikers where user='"+user+"'";
@@ -75,6 +76,7 @@ public class App {
                         break;
                     case "login_pass":
                         System.out.println("Vul uw pincode in:");
+                        
                         while(sc.hasNextLine() && state.equals("login_pass")) {
                             pin = sc.nextLine();
                             sql = "select * from gebruikers where"
@@ -85,15 +87,22 @@ public class App {
                             // check if user exists
                             if(myRs.next()) {
                                 // user found
-                                state = "login_success";
+                                state = "admin_home";
                                 System.out.println("Login success!");
                             } else {
                                 System.out.println("Password wrong.");
                             }
                         }
                         break;
+                    case "admin_home":
+                        System.out.println("Welkom bij het LDH Menu:");
+                        System.out.println("1: Optie 1");
+                        System.out.println("2: Optie 2");
+                        System.out.println("3: Optie 3");
+                        break;
                     default:
                         System.out.println("End of program");
+                        state = "program_end";
                 }
             }
         }
