@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -51,6 +54,11 @@ public class App {
             @Override
             public void actionPerformed(ActionEvent event) {
                 Handler db = new Handler(conn, usr, pwd);
+                try {
+                    db.compareData(conn, usr, pwd);
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         
