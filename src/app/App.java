@@ -8,17 +8,20 @@ package app;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.io.File;
-import java.io.IOException;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import java.sql.*;
-import java.util.*;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+//import java.sql.SQLException;
 
 /**
  *
@@ -28,7 +31,6 @@ public class App {
 
     /**
      * @param args the command line arguments
-     * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
         // get parameters
@@ -37,78 +39,36 @@ public class App {
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
         
-        Scanner sc = new Scanner(System.in);
+        JFrame jf = new JFrame();
+        jf.setSize(640, 480);
+        jf.setTitle("Check fouten in DB");
+        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        String state;
+        JPanel p = new JPanel();
+        p.setLayout(new GridLayout(1, 3));//gridlayout moet nog veranderd worden.
         
-        try {
-            state = "login_start";
-            
-            // get connection
-            Connection myConn = DriverManager.getConnection(conn, usr, pwd);
-            
-            // get login users
-            Statement myStmt = myConn.createStatement();
-            
-            String user = null;
-            String pin = null;
-            String sql = null;
-            
-            while(!state.equals("program_end")) {
-                switch(state) {
-                    case "login_start":
-                        System.out.println("Leger Des Heils DB Programma:");
-                        System.out.println("Vul in uw gebruikersnaam:");
-                        
-                        while(sc.hasNextLine() && state.equals("login_start")) {
-                            user = sc.nextLine();
-                            sql = "select * from gebruikers where user='"+user+"'";
-                            ResultSet myRs = myStmt.executeQuery(sql);
+        JButton toonMax = new JButton("check foutive gegevens");
+        
+        class Listener implements ActionListener {
 
-                            // check if user exists
-                            if(myRs.next()) {
-                                state = "login_pass";
-                                System.out.println("Vul uw pincode in:");
-                            } else {
-                                System.out.println("No user found.");
-                            }
-                        }
-                        break;
-                    case "login_pass":
-                        System.out.println("Vul uw pincode in:");
-                        
-                        while(sc.hasNextLine() && state.equals("login_pass")) {
-                            pin = sc.nextLine();
-                            sql = "select * from gebruikers where"
-                                    + " user='"+user+"'"
-                                    + " AND pin='"+pin+"'";
-                            ResultSet myRs = myStmt.executeQuery(sql);
-
-                            // check if user exists
-                            if(myRs.next()) {
-                                // user found
-                                state = "admin_home";
-                                System.out.println("Login success!");
-                            } else {
-                                System.out.println("Password wrong.");
-                            }
-                        }
-                        break;
-                    case "admin_home":
-                        System.out.println("Welkom bij het LDH Menu:");
-                        System.out.println("1: Optie 1");
-                        System.out.println("2: Optie 2");
-                        System.out.println("3: Optie 3");
-                        break;
-                    default:
-                        System.out.println("End of program");
-                        state = "program_end";
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Handler db = new Handler(conn, usr, pwd);
+                try {
+                    db.compareData(conn, usr, pwd);
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        catch (Exception exc) {
-            exc.printStackTrace();
-        }
+        
+        ActionListener Listener = new Listener();
+        toonMax.addActionListener(Listener);
+       
+        p.add(toonMax);
+        
+        jf.add(p);
+        jf.setVisible(true);
     }
      
     /**
