@@ -8,8 +8,8 @@ and open the template in the editor.
 
 <root>
     <dbconnect>
-        <ConnectString></ConnectString>
-        <Username>root</Username>
-        <Password>test</Password>
+        <ConnectString>jdbc:sqlserver://localhost;</ConnectString>
+        <Username>user=testAccount</Username>
+        <Password>password=pass</Password>
     </dbconnect>
 </root>
