@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -37,6 +38,7 @@ import org.xml.sax.SAXException;
 public class Frame {
     private Handler handler;
     private JSplitPane mainFrame;
+    private JTable mainTable;
     
     public Frame() throws Exception {
         
@@ -63,10 +65,10 @@ public class Frame {
         JPanel OptionList = this.getQueryButtons();
         
         // Right Main area
-        JTable MainTable = this.getQueryToTable(handler.getUitDienstResult());
+        JTable mainTable = this.getQueryToTable(handler.getUitDienstResult());
         
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-                OptionList, MainTable);
+                OptionList, new JScrollPane(mainTable));
                 
         jf.add(mainFrame);
         jf.setVisible(true);
@@ -82,6 +84,48 @@ public class Frame {
         buttons[1] = new JButton("getInProfitNotInAD");
         buttons[2] = new JButton("getInADNotInProfit");
         buttons[3] = new JButton("getInADnotInClever");
+        
+        class ClickListener1 implements ActionListener {
+             @Override
+             public void actionPerformed(ActionEvent event) {
+                 mainTable = getQueryToTable(handler.getUitDienstResult());
+                 createMainView();
+             }
+        }
+        
+        class ClickListener2 implements ActionListener {
+             @Override
+             public void actionPerformed(ActionEvent event) {
+                 mainTable = getQueryToTable(handler.getInProfitNotInAD());
+                 createMainView();
+             }
+        }
+        
+        class ClickListener3 implements ActionListener {
+             @Override
+             public void actionPerformed(ActionEvent event) {
+                 mainTable = getQueryToTable(handler.getInADNotInProfit());
+                 createMainView();
+             }
+        }
+        
+        class ClickListener4 implements ActionListener {
+             @Override
+             public void actionPerformed(ActionEvent event) {
+                 mainTable = getQueryToTable(handler.getInADnotInClever());
+                 createMainView();
+                 System.out.println("button 4");
+             }
+        }
+        
+        ActionListener cl1 = new ClickListener1();
+        ActionListener cl2 = new ClickListener2();
+        ActionListener cl3 = new ClickListener3();
+        ActionListener cl4 = new ClickListener4();
+        buttons[0].addActionListener(cl1);
+        buttons[1].addActionListener(cl2);
+        buttons[2].addActionListener(cl3);
+        buttons[3].addActionListener(cl4);
         
         for (JButton i : buttons) {
             if(i!=null) {
@@ -117,7 +161,7 @@ public class Frame {
             for (int i = 0; i < rsmd.getColumnCount(); i++) {
                 // add columns
                 columnNames[i] = rsmd.getColumnName(i+1);
-                data[0][i] = columnNames[i];
+                //data[0][i] = columnNames[i];
             }
             
             // add data
@@ -126,16 +170,20 @@ public class Frame {
                 if (!rs.next()) {
                    System.out.println("No records found");
                 } else {
-                    int index = 1;
+                    int index = 0;
                     
                     while (rs.next()) {
                         System.out.print("Record found: ");
-                        for (int i = 0; i < rsmd.getColumnCount(); i++) {
-                            data[index][i] = rs.getString(i+1);
-                            System.out.print(rs.getString(i+1));
+                        if(index < 999) {
+                            for (int i = 0; i < rsmd.getColumnCount(); i++) {
+                                data[index][i] = rs.getString(i+1);
+
+                                System.out.print(rs.getString(i+1));
+                                System.out.print(" ");
+                            }
+                            System.out.println("");
+                            index++;
                         }
-                        System.out.println("");
-                        index++;
                     }
                 }
             } catch (SQLException e) {
