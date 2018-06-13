@@ -5,6 +5,7 @@
  */
 package app;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import javax.xml.parsers.DocumentBuilder;
@@ -31,6 +33,7 @@ import org.xml.sax.SAXException;
  */
 public class Frame {
     private Handler h;
+    private JSplitPane mainFrame;
     
     public Frame() throws Exception {
         
@@ -39,36 +42,38 @@ public class Frame {
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
 
+        h = new Handler(conn, usr, pwd);
+        
+        this.createMainView();
+    }
+    
+    public void createMainView() {
         JFrame jf = new JFrame();
-        jf.setSize(640, 480);
-        jf.setTitle("Check fouten in DB");
+        jf.setSize(864, 576);
+        jf.setTitle("Leger Des Heils Database Applicatie");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel p = new JPanel();
-        p.setLayout(new GridLayout(1, 3));//gridlayout moet nog veranderd worden.
-
-        JButton toonMax = new JButton("check foutieve gegevens");
-
-        h = new Handler(conn, usr, pwd);
-
-        class Listener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                /*try {
-                    h.compareData(conn, usr, pwd);
-                } catch (SQLException ex) {
-                    Logger.getLogger(BuildFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
-            }
-        }
-
-        ActionListener Listener = new Listener();
-        toonMax.addActionListener(Listener);
-
-        p.add(toonMax);
         
-        jf.add(p);
+        // Left Sidebar
+        JPanel OptionList = new JPanel();
+        OptionList.setLayout(new GridLayout(25,1));
+        
+        JButton toonMax = new JButton("check foutieve gegevens");
+        JButton toonMax2 = new JButton("check foutieve gegevens");
+        OptionList.add(toonMax);
+        OptionList.add(toonMax2);
+        
+        // Right Main area
+        JPanel OptionList2 = new JPanel(); 
+        
+        mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
+                OptionList, OptionList2);
+        
+        
+
+        
+        
+        jf.add(mainFrame);
         jf.setVisible(true);
     }
     
