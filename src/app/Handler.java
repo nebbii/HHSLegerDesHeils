@@ -20,17 +20,15 @@ import java.util.ArrayList;
  */
 public class Handler {
     
-    
-    
+    Connection conn;
     String connectString;
     String user;
     String pass;
-    ArrayList<ArrayList<String>> obj;
     
     public Handler(String connectString, String usr, String pwd) {
         String connectionString = connectString + ";" + usr + ";" + pwd;
         try {
-            Connection conn = DriverManager.getConnection(connectionString);
+            conn = DriverManager.getConnection(connectionString);
 
             System.out.println("verbinding gemaakt...");
             conn.close();
@@ -40,11 +38,10 @@ public class Handler {
 
         }
     }
-
-    public void compareData(String connectString, String usr, String pwd) throws SQLException {
+    
+    /*public void compareData(String connectString, String usr, String pwd) throws SQLException {
 
         Statement stmt = null;
-        obj = new ArrayList<ArrayList<String>>();
 
         String connectionString = connectString + ";" + usr + ";" + pwd;
 
@@ -66,6 +63,26 @@ public class Handler {
                 stmt.close();
             }
         }
+    }*/
+    
+    /**
+     * Executes query and returns ResultSet object
+     * 
+     * @param stmt
+     * @param query
+     * @return 
+     */
+    public ResultSet doQuery(Statement stmt, String query) {
+        ResultSet rs = null;
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
     }
     
     /**
@@ -75,44 +92,24 @@ public class Handler {
      * @return 
      */
     public ResultSet getUitDienstResult(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "select Username_Pre2000 , ContractEndDate "
                 + "from [AD-Export]  "
                 + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE Disabled = '0' "
                 + "AND ContractEndDate < '2018-06-11'";
-
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
         
-        return rs;
+        return this.doQuery(stmt, query);
     }
     
     public ResultSet getInProfitNotInAD(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "select EmployeeUsername "
                 + "FROM [AfasProfit-Export]  "
                 + "LEFT JOIN [AD-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE Username_Pre2000 IS NULL ";
 
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return rs;
+        return this.doQuery(stmt, query);
     }
     
     /**
@@ -122,44 +119,24 @@ public class Handler {
      * @return 
      */
     public ResultSet getInADNotInProfit(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "select Username_Pre2000 "
                 + "from [AD-Export]  "
                 + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE EmployeeUsername IS NULL ";
 
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return rs;
+        return this.doQuery(stmt, query);
     }
     
     public ResultSet getInADnotInClever(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "SELECT ad.[Username_Pre2000] "
                 + "FROM [AD-Export] AS ad "
                 + "LEFT JOIN [PersoonCodes] AS pc ON pc.[Code] = ad.[Username_Pre2000] "
                 + "WHERE pc.[Code] IS NULL  "
                 + "AND ad.[Disabled] != '0'";
 
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return rs;
+        return this.doQuery(stmt, query);
     }
     
     /**
@@ -170,10 +147,7 @@ public class Handler {
      * @return 
      */
     public ResultSet getNoBaAccountForUserInClever(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "SELECT p.[ID] AS pid "
                 + "FROM [Medewerker] AS m "
                 + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
@@ -182,14 +156,7 @@ public class Handler {
                 + "WHERE pc.[Code] = 'Andere Code'  "
                 + "OR pc.[Code] IS NULL";
 
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return rs;
+        return this.doQuery(stmt, query);
     }
     
     /**
@@ -199,10 +166,7 @@ public class Handler {
      * @return 
      *
     public ResultSet getAmountOfResults21(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "SELECT count(p.[ID]) AS amount "
                 + "FROM [Medewerker] AS m "
                 + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
@@ -211,14 +175,7 @@ public class Handler {
                 + "WHERE pc.[Code] = 'Andere Code'  "
                 + "OR pc.[Code] IS NULL";
 
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return rs;
+        return this.doQuery(stmt, query);
     }*/
     
     /**
@@ -228,10 +185,7 @@ public class Handler {
      * @return 
      *
     public ResultSet getOutOfServiceInClever(Statement stmt) {
-        
-        ResultSet rs = null;
         String query;
-        
         query = "SELECT p.[ID] , pc.[Code] "
                 + "FROM [Medewerker] AS m "
                 + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
@@ -241,14 +195,7 @@ public class Handler {
                 + "WHERE pc.[Code] != 'Andere Code'  "
                 + "AND a.[Disabled] = '0' ";
 
-        try {
-            rs = stmt.executeQuery(query);
-        }
-        catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return rs;
+        return this.doQuery(stmt, query);
     }*/
             
     
