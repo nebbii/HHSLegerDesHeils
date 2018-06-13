@@ -39,6 +39,8 @@ public class Frame {
     private Handler handler;
     private JSplitPane mainFrame;
     private JTable mainTable;
+    private JScrollPane scrollTable;
+    private JFrame jf;
     
     public Frame() throws Exception {
         
@@ -65,10 +67,11 @@ public class Frame {
         JPanel OptionList = this.getQueryButtons();
         
         // Right Main area
-        JTable mainTable = this.getQueryToTable(handler.getUitDienstResult());
+        JTable mainTable = this.getQueryToTable(handler.getInADNotInProfit());
+        JScrollPane ScrollTable = new JScrollPane(mainTable);
         
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-                OptionList, new JScrollPane(mainTable));
+                OptionList, ScrollTable);
                 
         jf.add(mainFrame);
         jf.setVisible(true);
@@ -88,8 +91,7 @@ public class Frame {
         class ClickListener1 implements ActionListener {
              @Override
              public void actionPerformed(ActionEvent event) {
-                 mainTable = getQueryToTable(handler.getUitDienstResult());
-                 createMainView();
+                 mainTable = getQueryToTable(handler.getInProfitNotInAD());
              }
         }
         
@@ -97,7 +99,6 @@ public class Frame {
              @Override
              public void actionPerformed(ActionEvent event) {
                  mainTable = getQueryToTable(handler.getInProfitNotInAD());
-                 createMainView();
              }
         }
         
@@ -105,7 +106,6 @@ public class Frame {
              @Override
              public void actionPerformed(ActionEvent event) {
                  mainTable = getQueryToTable(handler.getInADNotInProfit());
-                 createMainView();
              }
         }
         
@@ -113,8 +113,6 @@ public class Frame {
              @Override
              public void actionPerformed(ActionEvent event) {
                  mainTable = getQueryToTable(handler.getInADnotInClever());
-                 createMainView();
-                 System.out.println("button 4");
              }
         }
         
@@ -174,7 +172,7 @@ public class Frame {
                     
                     while (rs.next()) {
                         System.out.print("Record found: ");
-                        if(index < 999) {
+                        if(index < 9999) {
                             for (int i = 0; i < rsmd.getColumnCount(); i++) {
                                 data[index][i] = rs.getString(i+1);
 
