@@ -9,6 +9,6 @@ public class App {
     
     public static void main(String[] args) throws Exception {
         // get parameters
-        BuildFrame b = new BuildFrame();
+        Frame b = new Frame();
     }
 }

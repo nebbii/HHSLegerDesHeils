@@ -29,10 +29,10 @@ import org.xml.sax.SAXException;
  *
  * @author willem
  */
-public class BuildFrame {
+public class Frame {
     private Handler h;
     
-    public BuildFrame() throws Exception {
+    public Frame() throws Exception {
         
         Document document = getParameters();
         String conn = document.getElementsByTagName("ConnectString").item(0).getTextContent();
@@ -50,23 +50,16 @@ public class BuildFrame {
         JButton toonMax = new JButton("check foutieve gegevens");
 
         h = new Handler(conn, usr, pwd);
-        /*String[][] resultSet = new String[h.getObj().size()][2];
-        for (ArrayList<String> curRow : h.getObj()) {
-            for (String curVak : curRow) {
-                
-            }
-        } */
-        JTable resluts = new JTable();
 
         class Listener implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                try {
+                /*try {
                     h.compareData(conn, usr, pwd);
                 } catch (SQLException ex) {
                     Logger.getLogger(BuildFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }*/
             }
         }
 
@@ -74,7 +67,6 @@ public class BuildFrame {
         toonMax.addActionListener(Listener);
 
         p.add(toonMax);
-        //p.add(resluts);
         
         jf.add(p);
         jf.setVisible(true);
