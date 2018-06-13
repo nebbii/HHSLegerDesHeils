@@ -24,17 +24,20 @@ public class Handler {
     String connectString;
     String user;
     String pass;
+    Statement stmt;
+    
     
     public Handler(String connectString, String usr, String pwd) {
         String connectionString = connectString + ";" + usr + ";" + pwd;
         try {
             conn = DriverManager.getConnection(connectionString);
-
-            System.out.println("verbinding gemaakt...");
+            stmt = conn.createStatement();
+            
+            System.out.println("Verbinding Gemaakt");
             conn.close();
         } catch (SQLException e) {
-            System.out.println("Fout: SQL-server is niet beschikbaar!");
-
+            System.out.print("Mislukt: ");
+            System.out.println(e.getMessage());
         }
     }
     
@@ -50,6 +53,7 @@ public class Handler {
 
         try {
             rs = stmt.executeQuery(query);
+            
         }
         catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -61,10 +65,9 @@ public class Handler {
     /**
      *  Medewerker uit dienst in Profit, account is in AD actief
      * 
-     * @param stmt
      * @return 
      */
-    public ResultSet getUitDienstResult(Statement stmt) {
+    public ResultSet getUitDienstResult() {
         String query;
         query = "select Username_Pre2000 , ContractEndDate "
                 + "from [AD-Export]  "
@@ -75,7 +78,7 @@ public class Handler {
         return this.doQuery(stmt, query);
     }
     
-    public ResultSet getInProfitNotInAD(Statement stmt) {
+    public ResultSet getInProfitNotInAD() {
         String query;
         query = "select EmployeeUsername "
                 + "FROM [AfasProfit-Export]  "
@@ -88,10 +91,9 @@ public class Handler {
     /**
      * AD Account onbekend in Profit
      * 
-     * @param stmt
      * @return 
      */
-    public ResultSet getInADNotInProfit(Statement stmt) {
+    public ResultSet getInADNotInProfit() {
         String query;
         query = "select Username_Pre2000 "
                 + "from [AD-Export]  "
@@ -101,7 +103,7 @@ public class Handler {
         return this.doQuery(stmt, query);
     }
     
-    public ResultSet getInADnotInClever(Statement stmt) {
+    public ResultSet getInADnotInClever() {
         String query;
         query = "SELECT ad.[Username_Pre2000] "
                 + "FROM [AD-Export] AS ad "
@@ -116,10 +118,9 @@ public class Handler {
      * RDS naam in Clevernew is niet ingevuld
      * Query not yet functional
      * 
-     * @param stmt
      * @return 
      */
-    public ResultSet getNoBaAccountForUserInClever(Statement stmt) {
+    public ResultSet getNoBaAccountForUserInClever() {
         String query;
         query = "SELECT p.[ID] AS pid "
                 + "FROM [Medewerker] AS m "

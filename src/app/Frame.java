@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -60,7 +61,7 @@ public class Frame {
         JPanel OptionList = this.getQueryButtons();
         
         // Right Main area
-        JPanel OptionList2 = new JPanel(); 
+        JPanel OptionList2 = new JPanel();
         
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
                 OptionList, OptionList2);
@@ -87,6 +88,12 @@ public class Frame {
         }
         
         return list;
+    }
+    
+    public JTable getQueryToTable(ResultSet rs) {
+        JTable table = null;
+        
+        return table;
     }
     
     /**
