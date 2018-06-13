@@ -26,11 +26,7 @@ public class Handler {
     String user;
     String pass;
     ArrayList<ArrayList<String>> obj;
-
-    public ArrayList<ArrayList<String>> getObj() {
-        return obj;
-    }
-
+    
     public Handler(String connectString, String usr, String pwd) {
         String connectionString = connectString + ";" + usr + ";" + pwd;
         try {
@@ -58,120 +54,8 @@ public class Handler {
             stmt = conn.createStatement();
             
             ResultSet rs = this.getUitDienstResult(stmt);
-
-            while (rs.next()) {
-                System.out.print(rs.getString("Username_Pre2000") + "\t\t");
-                System.out.println(rs.getString("ContractEndDate") + " Medewerker uit dienst in Profit, account is in AD actief");
-                ArrayList<String> tempRow = new ArrayList<>();
-                tempRow.add(rs.getString("Username_Pre2000"));
-                tempRow.add(rs.getString("ContractEndDate"));
-                obj.add(tempRow);
-            }
             
-            /**
-             * Vergelijk Profit met de AD Als BA-Account in Afas Profit niet
-             * voorkomt in BA-Account van de AD Genereer signaal "RDS User naam
-             * in Profit bestaat niet in de AD"
-             *
-             * Als BA-Account een Datum Einde Contract heeft in Profit maar nog
-             * actief is in de AD Genereer SIgnaal "Medewerker uit dienst in
-             * Profit, account is in AD actief"
-             *
-             * Als een BA Account in de AD niet voorkomt in Profit genereer
-             * Signaal "AD Account, onbekend in Profit"
-             *
-             */
-        
-            // Medewerker uit dienst in Profit, account is in AD actief
-//            String uitDienstQuery
-//                = "select Username_Pre2000 , ContractEndDate "
-//                + "from [AD-Export]  "
-//                + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
-//                + "WHERE Disabled = '0' "
-//                + "AND ContractEndDate < '2018-06-11'";
-//            ResultSet rs = stmt.executeQuery(uitDienstQuery);
-//            while (rs.next()) {
-//                System.out.print(rs.getString("Username_Pre2000") + "\t\t");
-//                System.out.println(rs.getString("ContractEndDate") + " Medewerker uit dienst in Profit, account is in AD actief");
-//                ArrayList<String> tempRow = new ArrayList<>();
-//                tempRow.add(rs.getString("Username_Pre2000"));
-//                tempRow.add(rs.getString("ContractEndDate"));
-//                obj.add(tempRow);
-//                
-//                //String [] results= new String[rs.getInt("Username_Pre2000")];
-//            }
-//            // RDS User naam in Profit bestaat niet in de AD
-//            String inProfitNotInAD
-//                = "select EmployeeUsername "
-//                + "FROM [AfasProfit-Export]  "
-//                + "LEFT JOIN [AD-Export] ON Username_Pre2000 = EmployeeUsername "
-//                + "WHERE Username_Pre2000 IS NULL ";
-//            ResultSet rs2 = stmt.executeQuery(inProfitNotInAD);
-//            while (rs2.next()) {
-//                System.out.println(rs2.getString("EmployeeUsername") + "\t RDS User naam in Profit bestaat niet in de AD");
-//            }
-//
-//            // AD Account onbekend in Profit
-//            String inADNotInProfit
-//                = "select Username_Pre2000 "
-//                + "from [AD-Export]  "
-//                + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
-//                + "WHERE EmployeeUsername IS NULL ";
-//            ResultSet rs3 = stmt.executeQuery(inADNotInProfit);
-//            while (rs3.next()) {
-//                System.out.println(rs3.getString("Username_Pre2000") + "\t AD Account, onbekend in Profit");
-//            }
-//
-//            // AD Account, onbekend in Clever
-//            String inADnotInClever //signaal 2.4
-//                = "SELECT ad.[Username_Pre2000] "
-//                + "FROM [AD-Export] AS ad "
-//                + "LEFT JOIN [PersoonCodes] AS pc ON pc.[Code] = ad.[Username_Pre2000] "
-//                + "WHERE pc.[Code] IS NULL  "
-//                + "AND ad.[Disabled] != '0'";
-//            ResultSet rs4 = stmt.executeQuery(inADnotInClever);
-//            while (rs4.next()) {
-//                System.out.println(rs4.getString("Username_Pre2000") + "\t AD Account, onbekend in Clever");
-//            }
-//            
-//            // RDS naam in Clevernew is niet ingevuld
-//            String NoBaAccountForUserInClever //signaal 2.1 
-//                = "SELECT p.[ID] AS pid "
-//                + "FROM [Medewerker] AS m "
-//                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-//                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-//                + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
-//                + "WHERE pc.[Code] = 'Andere Code'  "
-//                + "OR pc.[Code] IS NULL";
-//            ResultSet rs5 = stmt.executeQuery(NoBaAccountForUserInClever); //WEKRT NIET
-//            while (rs5.next()) {
-//                System.out.println(rs5.getString("pid") + "\t RDS naam in Clevernew is niet ingevuld");
-//            }
-//            
-//            String amountOfResults21 //signaal 2.1 WERKT NIET
-//                = "SELECT count(p.[ID]) AS amount "
-//                + "FROM [Medewerker] AS m "
-//                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-//                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-//                + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
-//                + "WHERE pc.[Code] = 'Andere Code'  "
-//                + "OR pc.[Code] IS NULL";
-//            ResultSet rs6 = stmt.executeQuery(amountOfResults21); //WEKRT NIET
-//            while (rs6.next()) {
-//                System.out.println(rs6.getString("amount") + "\t results in this query");
-//
-//            }
-//            
-//            String OutOfServiceInClever //signaal 2.3 WERKT NIET
-//                = "SELECT p.[ID] , pc.[Code] "
-//                + "FROM [Medewerker] AS m "
-//                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-//                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-//                + "JOIN [AD-Export] AS a ON pc.[Code] = a.[Username_Pre2000] "
-//                + "JOIN [Werkzaam] AS w ON w.[MedewerkerID] = m.[ID] "
-//                + "WHERE pc.[Code] != 'Andere Code'  "
-//                + "AND a.[Disabled] = '0' ";
-////              + "AND pc.[Einddatum] < '2018-06-11' ";
+            
             
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -193,16 +77,16 @@ public class Handler {
     public ResultSet getUitDienstResult(Statement stmt) {
         
         ResultSet rs = null;
-        String uitDienstQuery;
+        String query;
         
-        uitDienstQuery = "select Username_Pre2000 , ContractEndDate "
+        query = "select Username_Pre2000 , ContractEndDate "
                 + "from [AD-Export]  "
                 + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE Disabled = '0' "
                 + "AND ContractEndDate < '2018-06-11'";
 
         try {
-            rs = stmt.executeQuery(uitDienstQuery);
+            rs = stmt.executeQuery(query);
         }
         catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -210,5 +94,163 @@ public class Handler {
         
         return rs;
     }
+    
+    public ResultSet getInProfitNotInAD(Statement stmt) {
+        
+        ResultSet rs = null;
+        String query;
+        
+        query = "select EmployeeUsername "
+                + "FROM [AfasProfit-Export]  "
+                + "LEFT JOIN [AD-Export] ON Username_Pre2000 = EmployeeUsername "
+                + "WHERE Username_Pre2000 IS NULL ";
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
+    }
+    
+    /**
+     * AD Account onbekend in Profit
+     * 
+     * @param stmt
+     * @return 
+     */
+    public ResultSet getInADNotInProfit(Statement stmt) {
+        
+        ResultSet rs = null;
+        String query;
+        
+        query = "select Username_Pre2000 "
+                + "from [AD-Export]  "
+                + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
+                + "WHERE EmployeeUsername IS NULL ";
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
+    }
+    
+    public ResultSet getInADnotInClever(Statement stmt) {
+        
+        ResultSet rs = null;
+        String query;
+        
+        query = "SELECT ad.[Username_Pre2000] "
+                + "FROM [AD-Export] AS ad "
+                + "LEFT JOIN [PersoonCodes] AS pc ON pc.[Code] = ad.[Username_Pre2000] "
+                + "WHERE pc.[Code] IS NULL  "
+                + "AND ad.[Disabled] != '0'";
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
+    }
+    
+    /**
+     * RDS naam in Clevernew is niet ingevuld
+     * Query not yet functional
+     * 
+     * @param stmt
+     * @return 
+     */
+    public ResultSet getNoBaAccountForUserInClever(Statement stmt) {
+        
+        ResultSet rs = null;
+        String query;
+        
+        query = "SELECT p.[ID] AS pid "
+                + "FROM [Medewerker] AS m "
+                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
+                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
+                + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
+                + "WHERE pc.[Code] = 'Andere Code'  "
+                + "OR pc.[Code] IS NULL";
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
+    }
+    
+    /**
+     * Werkt nog niet, krijgt count resultaten met join
+     * 
+     * @param stmt
+     * @return 
+     *
+    public ResultSet getAmountOfResults21(Statement stmt) {
+        
+        ResultSet rs = null;
+        String query;
+        
+        query = "SELECT count(p.[ID]) AS amount "
+                + "FROM [Medewerker] AS m "
+                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
+                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
+                + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
+                + "WHERE pc.[Code] = 'Andere Code'  "
+                + "OR pc.[Code] IS NULL";
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
+    }*/
+    
+    /**
+     * Werkt nog niet, checkt out of service in clever
+     * 
+     * @param stmt
+     * @return 
+     *
+    public ResultSet getOutOfServiceInClever(Statement stmt) {
+        
+        ResultSet rs = null;
+        String query;
+        
+        query = "SELECT p.[ID] , pc.[Code] "
+                + "FROM [Medewerker] AS m "
+                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
+                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
+                + "JOIN [AD-Export] AS a ON pc.[Code] = a.[Username_Pre2000] "
+                + "JOIN [Werkzaam] AS w ON w.[MedewerkerID] = m.[ID] "
+                + "WHERE pc.[Code] != 'Andere Code'  "
+                + "AND a.[Disabled] = '0' ";
+
+        try {
+            rs = stmt.executeQuery(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return rs;
+    }*/
             
+    
+    
 }
