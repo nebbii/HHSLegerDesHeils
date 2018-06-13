@@ -5,11 +5,14 @@
  */
 package app;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -17,7 +20,9 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,7 +35,8 @@ import org.xml.sax.SAXException;
  * @author willem
  */
 public class Frame {
-    private Handler h;
+    private Handler handler;
+    private JSplitPane mainFrame;
     
     public Frame() throws Exception {
         
@@ -39,37 +45,123 @@ public class Frame {
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();
         String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
 
+        handler = new Handler(conn, usr, pwd);
+        
+        this.createMainView();
+    }
+    
+    /**
+     * Render the main frame
+     */
+    public void createMainView() {
         JFrame jf = new JFrame();
-        jf.setSize(640, 480);
-        jf.setTitle("Check fouten in DB");
+        jf.setSize(864, 576);
+        jf.setTitle("Leger Des Heils Database Applicatie");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JPanel p = new JPanel();
-        p.setLayout(new GridLayout(1, 3));//gridlayout moet nog veranderd worden.
-
-        JButton toonMax = new JButton("check foutieve gegevens");
-
-        h = new Handler(conn, usr, pwd);
-
-        class Listener implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                /*try {
-                    h.compareData(conn, usr, pwd);
-                } catch (SQLException ex) {
-                    Logger.getLogger(BuildFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
+        
+        // Left Sidebar
+        JPanel OptionList = this.getQueryButtons();
+        
+        // Right Main area
+        JTable MainTable = this.getQueryToTable(handler.getUitDienstResult());
+        
+        mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
+                OptionList, MainTable);
+                
+        jf.add(mainFrame);
+        jf.setVisible(true);
+    }
+    
+    public JPanel getQueryButtons() {
+        JPanel list = new JPanel();
+        list.setLayout(new GridLayout(25,1));
+        
+        JButton[] buttons = new JButton[25];
+        
+        buttons[0] = new JButton("getUitDienstResult");
+        buttons[1] = new JButton("getInProfitNotInAD");
+        buttons[2] = new JButton("getInADNotInProfit");
+        buttons[3] = new JButton("getInADnotInClever");
+        
+        for (JButton i : buttons) {
+            if(i!=null) {
+                list.add(i);
             }
         }
-
-        ActionListener Listener = new Listener();
-        toonMax.addActionListener(Listener);
-
-        p.add(toonMax);
         
-        jf.add(p);
-        jf.setVisible(true);
+        return list;
+    }
+    
+    /**
+     * Gives a JTable with all table data
+     * 
+     * @param rs
+     * @return 
+     */
+    public JTable getQueryToTable(ResultSet rs) {
+        JTable table = null;
+        Object[][] data = null;
+
+        try {
+            // metadata for column count
+            ResultSetMetaData rsmd = rs.getMetaData();
+            
+            // count amount of rows
+            //int rowCount = handler.doResultSetCount(rs);
+            //rs.beforeFirst();
+            
+            data = new Object[10000][rsmd.getColumnCount()];
+            
+            // get column names
+            String[] columnNames = new String[rsmd.getColumnCount()];
+            for (int i = 0; i < rsmd.getColumnCount(); i++) {
+                // add columns
+                columnNames[i] = rsmd.getColumnName(i+1);
+                data[0][i] = columnNames[i];
+            }
+            
+            // add data
+            System.out.println(rs.getMetaData());
+            try {
+                if (!rs.next()) {
+                   System.out.println("No records found");
+                } else {
+                    int index = 1;
+                    
+                    while (rs.next()) {
+                        System.out.print("Record found: ");
+                        for (int i = 0; i < rsmd.getColumnCount(); i++) {
+                            data[index][i] = rs.getString(i+1);
+                            System.out.print(rs.getString(i+1));
+                        }
+                        System.out.println("");
+                        index++;
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println("SQL Exception:");
+                System.out.println(e.getMessage());
+            }
+            /*while(rs.next()) {
+                for (int j = 0; j < rowCount; j++) {
+                    data[j][0] = rs.getString(j);
+                    System.out.print("120: loop #");
+                    System.out.println(j);
+                }
+                System.out.println("test");
+            }*/
+            
+            //System.out.println(rs.getArray(columnNames[0]));
+            
+            DefaultTableModel model = new DefaultTableModel(data, columnNames);
+
+            table = new JTable(model);
+
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return table;
     }
     
     /**

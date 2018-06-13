@@ -24,45 +24,20 @@ public class Handler {
     String connectString;
     String user;
     String pass;
+    Statement stmt;
     
     public Handler(String connectString, String usr, String pwd) {
         String connectionString = connectString + ";" + usr + ";" + pwd;
         try {
             conn = DriverManager.getConnection(connectionString);
-
-            System.out.println("verbinding gemaakt...");
-            conn.close();
-        } catch (SQLException e) {
-            System.out.println("Fout: SQL-server is niet beschikbaar!");
-
-        }
-    }
-    
-    /*public void compareData(String connectString, String usr, String pwd) throws SQLException {
-
-        Statement stmt = null;
-
-        String connectionString = connectString + ";" + usr + ";" + pwd;
-
-        try {
-            Connection conn = DriverManager.getConnection(connectionString);
-
             stmt = conn.createStatement();
             
-            ResultSet rs = this.getUitDienstResult(stmt);
-            
-            
-            
+            System.out.println("Verbinding Gemaakt");
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            System.out.println("Fout: SQL-server is niet beschikbaar!");
-
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
+            System.out.print("Mislukt: ");
+            System.out.println(e.getMessage());
         }
-    }*/
+    }
     
     /**
      * Executes query and returns ResultSet object
@@ -71,9 +46,11 @@ public class Handler {
      * @param query
      * @return 
      */
-    public ResultSet doQuery(Statement stmt, String query) {
+    public ResultSet doQuery(String query) {
         ResultSet rs = null;
-
+        
+        System.out.println("Current Query:");
+        System.out.println(query);
         try {
             rs = stmt.executeQuery(query);
         }
@@ -85,49 +62,72 @@ public class Handler {
     }
     
     /**
-     *  Medewerker uit dienst in Profit, account is in AD actief
+     * Source: modified version of https://stackoverflow.com/a/35290713/2931464
      * 
-     * @param stmt
-     * @return 
+     * @param resultSet
+     * @return
+     * @throws SQLException 
      */
-    public ResultSet getUitDienstResult(Statement stmt) {
-        String query;
-        query = "select Username_Pre2000 , ContractEndDate "
-                + "from [AD-Export]  "
-                + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
-                + "WHERE Disabled = '0' "
-                + "AND ContractEndDate < '2018-06-11'";
+    public int doResultSetCount(ResultSet resultSet) throws SQLException{
+        try{
+            int i = 0;
+            while (resultSet.next()) {
+                i++;
+            }
+            return i;
+        } catch (SQLException e){
+           System.out.println("Error getting row count");
+        }
         
-        return this.doQuery(stmt, query);
+        System.out.println("error:");
+        resultSet.first();
+        return 0;
     }
     
-    public ResultSet getInProfitNotInAD(Statement stmt) {
+    /**
+     *  Medewerker uit dienst in Profit, account is in AD actief
+     * 
+     * @return 
+     */
+    public ResultSet getUitDienstResult() {
+        String query;
+        String countq;
+        
+        query = "select Username_Pre2000 , ContractEndDate"
+                + " from [AD-Export]"
+                + " LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername"
+                + " WHERE Disabled = '0' "
+                + " AND ContractEndDate < '2018-06-11'";
+        System.out.println(query);
+        return this.doQuery(query);
+    }
+    
+    public ResultSet getInProfitNotInAD() {
         String query;
         query = "select EmployeeUsername "
                 + "FROM [AfasProfit-Export]  "
                 + "LEFT JOIN [AD-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE Username_Pre2000 IS NULL ";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
     /**
      * AD Account onbekend in Profit
      * 
-     * @param stmt
      * @return 
      */
-    public ResultSet getInADNotInProfit(Statement stmt) {
+    public ResultSet getInADNotInProfit() {
         String query;
         query = "select Username_Pre2000 "
                 + "from [AD-Export]  "
                 + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE EmployeeUsername IS NULL ";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
-    public ResultSet getInADnotInClever(Statement stmt) {
+    public ResultSet getInADnotInClever() {
         String query;
         query = "SELECT ad.[Username_Pre2000] "
                 + "FROM [AD-Export] AS ad "
@@ -135,17 +135,16 @@ public class Handler {
                 + "WHERE pc.[Code] IS NULL  "
                 + "AND ad.[Disabled] != '0'";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
     /**
      * RDS naam in Clevernew is niet ingevuld
      * Query not yet functional
      * 
-     * @param stmt
      * @return 
      */
-    public ResultSet getNoBaAccountForUserInClever(Statement stmt) {
+    public ResultSet getNoBaAccountForUserInClever() {
         String query;
         query = "SELECT p.[ID] AS pid "
                 + "FROM [Medewerker] AS m "
@@ -155,47 +154,8 @@ public class Handler {
                 + "WHERE pc.[Code] = 'Andere Code'  "
                 + "OR pc.[Code] IS NULL";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
-    
-    /**
-     * Werkt nog niet, krijgt count resultaten met join
-     * 
-     * @param stmt
-     * @return 
-     *
-    public ResultSet getAmountOfResults21(Statement stmt) {
-        String query;
-        query = "SELECT count(p.[ID]) AS amount "
-                + "FROM [Medewerker] AS m "
-                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-                + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
-                + "WHERE pc.[Code] = 'Andere Code'  "
-                + "OR pc.[Code] IS NULL";
-
-        return this.doQuery(stmt, query);
-    }*/
-    
-    /**
-     * Werkt nog niet, checkt out of service in clever
-     * 
-     * @param stmt
-     * @return 
-     *
-    public ResultSet getOutOfServiceInClever(Statement stmt) {
-        String query;
-        query = "SELECT p.[ID] , pc.[Code] "
-                + "FROM [Medewerker] AS m "
-                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-                + "JOIN [AD-Export] AS a ON pc.[Code] = a.[Username_Pre2000] "
-                + "JOIN [Werkzaam] AS w ON w.[MedewerkerID] = m.[ID] "
-                + "WHERE pc.[Code] != 'Andere Code'  "
-                + "AND a.[Disabled] = '0' ";
-
-        return this.doQuery(stmt, query);
-    }*/
             
     
     
