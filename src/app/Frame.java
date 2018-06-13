@@ -92,11 +92,15 @@ public class Frame {
         return list;
     }
     
+    /**
+     * Gives a JTable with all table data
+     * 
+     * @param rs
+     * @return 
+     */
     public JTable getQueryToTable(ResultSet rs) {
         JTable table = null;
         Object[][] data = null;
-        
-        
 
         try {
             // metadata for column count
@@ -123,13 +127,14 @@ public class Frame {
                    System.out.println("No records found");
                 } else {
                     int index = 1;
-                    System.out.println("Records found");
+                    
                     while (rs.next()) {
-                        System.out.print("Currently at index #");
-                        System.out.println(index);
-                        for (int i = 1; i < rsmd.getColumnCount(); i++) {
-                            data[index][i-1] = rs.getString(i);
+                        System.out.print("Record found: ");
+                        for (int i = 0; i < rsmd.getColumnCount(); i++) {
+                            data[index][i] = rs.getString(i+1);
+                            System.out.print(rs.getString(i+1));
                         }
+                        System.out.println("");
                         index++;
                     }
                 }
