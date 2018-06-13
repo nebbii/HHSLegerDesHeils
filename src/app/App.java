@@ -5,6 +5,11 @@
  */
 package app;
 
+/**
+ * Start application
+ * 
+ * @author Ben
+ */
 public class App {
     
     public static void main(String[] args) throws Exception {

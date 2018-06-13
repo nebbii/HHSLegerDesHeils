@@ -38,32 +38,6 @@ public class Handler {
         }
     }
     
-    /*public void compareData(String connectString, String usr, String pwd) throws SQLException {
-
-        Statement stmt = null;
-
-        String connectionString = connectString + ";" + usr + ";" + pwd;
-
-        try {
-            Connection conn = DriverManager.getConnection(connectionString);
-
-            stmt = conn.createStatement();
-            
-            ResultSet rs = this.getUitDienstResult(stmt);
-            
-            
-            
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            System.out.println("Fout: SQL-server is niet beschikbaar!");
-
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-        }
-    }*/
-    
     /**
      * Executes query and returns ResultSet object
      * 
@@ -157,45 +131,6 @@ public class Handler {
 
         return this.doQuery(stmt, query);
     }
-    
-    /**
-     * Werkt nog niet, krijgt count resultaten met join
-     * 
-     * @param stmt
-     * @return 
-     *
-    public ResultSet getAmountOfResults21(Statement stmt) {
-        String query;
-        query = "SELECT count(p.[ID]) AS amount "
-                + "FROM [Medewerker] AS m "
-                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-                + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
-                + "WHERE pc.[Code] = 'Andere Code'  "
-                + "OR pc.[Code] IS NULL";
-
-        return this.doQuery(stmt, query);
-    }*/
-    
-    /**
-     * Werkt nog niet, checkt out of service in clever
-     * 
-     * @param stmt
-     * @return 
-     *
-    public ResultSet getOutOfServiceInClever(Statement stmt) {
-        String query;
-        query = "SELECT p.[ID] , pc.[Code] "
-                + "FROM [Medewerker] AS m "
-                + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
-                + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
-                + "JOIN [AD-Export] AS a ON pc.[Code] = a.[Username_Pre2000] "
-                + "JOIN [Werkzaam] AS w ON w.[MedewerkerID] = m.[ID] "
-                + "WHERE pc.[Code] != 'Andere Code'  "
-                + "AND a.[Disabled] = '0' ";
-
-        return this.doQuery(stmt, query);
-    }*/
             
     
     

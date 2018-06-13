@@ -52,16 +52,9 @@ public class Frame {
         jf.setSize(864, 576);
         jf.setTitle("Leger Des Heils Database Applicatie");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         
         // Left Sidebar
-        JPanel OptionList = new JPanel();
-        OptionList.setLayout(new GridLayout(25,1));
-        
-        JButton toonMax = new JButton("check foutieve gegevens");
-        JButton toonMax2 = new JButton("check foutieve gegevens");
-        OptionList.add(toonMax);
-        OptionList.add(toonMax2);
+        JPanel OptionList = this.getQueryButtons();
         
         // Right Main area
         JPanel OptionList2 = new JPanel(); 
@@ -69,12 +62,26 @@ public class Frame {
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
                 OptionList, OptionList2);
         
-        
-
-        
-        
         jf.add(mainFrame);
         jf.setVisible(true);
+    }
+    
+    public JPanel getQueryButtons() {
+        JPanel list = new JPanel();
+        list.setLayout(new GridLayout(25,1));
+        
+        JButton[] buttons = new JButton[25];
+        
+        buttons[0] = new JButton("getUitDienstResult");
+        buttons[1] = new JButton("getInProfitNotInAD");
+        buttons[2] = new JButton("getInADNotInProfit");
+        buttons[3] = new JButton("getInADnotInClever");
+        
+        for (JButton i : buttons) {
+            list.add(i);
+        }
+        
+        return list;
     }
     
     /**
