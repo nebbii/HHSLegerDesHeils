@@ -48,7 +48,9 @@ public class Handler {
      */
     public ResultSet doQuery(String query) {
         ResultSet rs = null;
-
+        
+        System.out.println("Current Query:");
+        System.out.println(query);
         try {
             rs = stmt.executeQuery(query);
         }
@@ -60,18 +62,43 @@ public class Handler {
     }
     
     /**
+     * Source: modified version of https://stackoverflow.com/a/35290713/2931464
+     * 
+     * @param resultSet
+     * @return
+     * @throws SQLException 
+     */
+    public int doResultSetCount(ResultSet resultSet) throws SQLException{
+        try{
+            int i = 0;
+            while (resultSet.next()) {
+                i++;
+            }
+            return i;
+        } catch (SQLException e){
+           System.out.println("Error getting row count");
+        }
+        
+        System.out.println("error:");
+        resultSet.first();
+        return 0;
+    }
+    
+    /**
      *  Medewerker uit dienst in Profit, account is in AD actief
      * 
      * @return 
      */
     public ResultSet getUitDienstResult() {
         String query;
-        query = "select Username_Pre2000 , ContractEndDate "
-                + "from [AD-Export]  "
-                + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
-                + "WHERE Disabled = '0' "
-                + "AND ContractEndDate < '2018-06-11'";
+        String countq;
         
+        query = "select Username_Pre2000 , ContractEndDate"
+                + " from [AD-Export]"
+                + " LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername"
+                + " WHERE Disabled = '0' "
+                + " AND ContractEndDate < '2018-06-11'";
+        System.out.println(query);
         return this.doQuery(query);
     }
     
