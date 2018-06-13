@@ -29,10 +29,10 @@ import org.xml.sax.SAXException;
  *
  * @author willem
  */
-public class BuildFrame {
+public class Frame {
     private Handler h;
     
-    public BuildFrame() throws Exception {
+    public Frame() throws Exception {
         
         Document document = getParameters();
         String conn = document.getElementsByTagName("ConnectString").item(0).getTextContent();

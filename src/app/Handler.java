@@ -32,7 +32,6 @@ public class Handler {
 
             System.out.println("verbinding gemaakt...");
             conn.close();
-            compareData(connectString,usr,pwd);
         } catch (SQLException e) {
             System.out.println("Fout: SQL-server is niet beschikbaar!");
 
