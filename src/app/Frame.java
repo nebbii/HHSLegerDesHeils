@@ -40,7 +40,7 @@ public class Frame {
     private JSplitPane mainFrame;
     private JTable mainTable;
     private JScrollPane scrollTable;
-    private JFrame jf;
+    public JFrame jf;
     
     public Frame() throws Exception {
         
@@ -65,6 +65,10 @@ public class Frame {
         
         // Left Sidebar
         JPanel OptionList = this.getQueryButtons();
+        
+        final JButton testButton = new JButton("Test button");
+        
+        OptionList.add(testButton);
         
         // Right Main area
         JTable mainTable = this.getQueryToTable(handler.getInADNotInProfit());
@@ -92,6 +96,7 @@ public class Frame {
              @Override
              public void actionPerformed(ActionEvent event) {
                  mainTable = getQueryToTable(handler.getInProfitNotInAD());
+                 jf.setTitle("test");
              }
         }
         
