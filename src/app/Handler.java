@@ -91,7 +91,6 @@ public class Handler {
      */
     public ResultSet getUitDienstResult() {
         String query;
-        String countq;
         
         query = "select Username_Pre2000 , ContractEndDate"
                 + " from [AD-Export]"

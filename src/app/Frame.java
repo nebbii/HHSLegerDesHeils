@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -66,10 +67,8 @@ public class Frame {
         // Right Main area
         JTable mainTable = this.getQueryToTable(handler.getUitDienstResult());
         
-        mainTable = this.getQueryToTable(handler.getInADnotInClever());
-        
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-                OptionList, mainTable);
+                OptionList, new JScrollPane(mainTable));
                 
         jf.add(mainFrame);
         jf.setVisible(true);
@@ -115,6 +114,7 @@ public class Frame {
              public void actionPerformed(ActionEvent event) {
                  mainTable = getQueryToTable(handler.getInADnotInClever());
                  createMainView();
+                 System.out.println("button 4");
              }
         }
         
@@ -161,7 +161,7 @@ public class Frame {
             for (int i = 0; i < rsmd.getColumnCount(); i++) {
                 // add columns
                 columnNames[i] = rsmd.getColumnName(i+1);
-                data[0][i] = columnNames[i];
+                //data[0][i] = columnNames[i];
             }
             
             // add data
@@ -170,7 +170,7 @@ public class Frame {
                 if (!rs.next()) {
                    System.out.println("No records found");
                 } else {
-                    int index = 1;
+                    int index = 0;
                     
                     while (rs.next()) {
                         System.out.print("Record found: ");
