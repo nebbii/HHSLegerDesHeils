@@ -78,7 +78,10 @@ public class Frame {
         buttons[3] = new JButton("getInADnotInClever");
         
         for (JButton i : buttons) {
-            list.add(i);
+            if(i!=null) {
+                list.add(i);
+                System.out.println(i.getText());
+            }
         }
         
         return list;
