@@ -60,11 +60,11 @@ public class Handler {
             ResultSet rs = this.getUitDienstResult(stmt);
 
             System.out.print(rs.getString("Username_Pre2000") + "\t\t");
-                System.out.println(rs.getString("ContractEndDate") + " Medewerker uit dienst in Profit, account is in AD actief");
-                ArrayList<String> tempRow = new ArrayList<>();
-                tempRow.add(rs.getString("Username_Pre2000"));
-                tempRow.add(rs.getString("ContractEndDate"));
-                obj.add(tempRow);
+            System.out.println(rs.getString("ContractEndDate") + " Medewerker uit dienst in Profit, account is in AD actief");
+            ArrayList<String> tempRow = new ArrayList<>();
+            tempRow.add(rs.getString("Username_Pre2000"));
+            tempRow.add(rs.getString("ContractEndDate"));
+            obj.add(tempRow);
             
             /**
              * Vergelijk Profit met de AD Als BA-Account in Afas Profit niet
@@ -201,16 +201,6 @@ public class Handler {
 
         try {
             rs = stmt.executeQuery(uitDienstQuery);
-            while (rs.next()) {
-                System.out.print(rs.getString("Username_Pre2000") + "\t\t");
-                System.out.println(rs.getString("ContractEndDate") + " Medewerker uit dienst in Profit, account is in AD actief");
-                ArrayList<String> tempRow = new ArrayList<>();
-                tempRow.add(rs.getString("Username_Pre2000"));
-                tempRow.add(rs.getString("ContractEndDate"));
-                obj.add(tempRow);
-
-                //String [] results= new String[rs.getInt("Username_Pre2000")];
-            }
         }
         catch(SQLException e) {
             
