@@ -47,6 +47,9 @@ public class Frame {
         this.createMainView();
     }
     
+    /**
+     * Render the main frame
+     */
     public void createMainView() {
         JFrame jf = new JFrame();
         jf.setSize(864, 576);
@@ -80,7 +83,6 @@ public class Frame {
         for (JButton i : buttons) {
             if(i!=null) {
                 list.add(i);
-                System.out.println(i.getText());
             }
         }
         
