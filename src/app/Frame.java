@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -61,11 +62,11 @@ public class Frame {
         JPanel OptionList = this.getQueryButtons();
         
         // Right Main area
-        JPanel OptionList2 = new JPanel();
+        JTable MainTable = this.getQueryToTable(h.getInADNotInProfit());
         
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-                OptionList, OptionList2);
-        
+                OptionList, MainTable);
+                
         jf.add(mainFrame);
         jf.setVisible(true);
     }
@@ -92,6 +93,26 @@ public class Frame {
     
     public JTable getQueryToTable(ResultSet rs) {
         JTable table = null;
+        
+        /*try {
+            while(rs.next()) {
+                System.out.println(rs.getString("TABLE_NAME"));
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }*/
+        
+        String[] columnNames = {"id", "Name"};
+        Object[][] data = new Object[2][2];
+        
+        data[0][0] = "1Test";
+        data[0][1] = "2Test";
+        data[1][0] = "3Test";
+        data[1][1] = "4Test";
+        
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        
+        table = new JTable(model);
         
         return table;
     }

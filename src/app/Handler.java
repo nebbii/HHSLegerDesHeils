@@ -26,7 +26,6 @@ public class Handler {
     String pass;
     Statement stmt;
     
-    
     public Handler(String connectString, String usr, String pwd) {
         String connectionString = connectString + ";" + usr + ";" + pwd;
         try {
@@ -34,7 +33,6 @@ public class Handler {
             stmt = conn.createStatement();
             
             System.out.println("Verbinding Gemaakt");
-            conn.close();
         } catch (SQLException e) {
             System.out.print("Mislukt: ");
             System.out.println(e.getMessage());
@@ -48,12 +46,11 @@ public class Handler {
      * @param query
      * @return 
      */
-    public ResultSet doQuery(Statement stmt, String query) {
+    public ResultSet doQuery(String query) {
         ResultSet rs = null;
 
         try {
             rs = stmt.executeQuery(query);
-            
         }
         catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -75,7 +72,7 @@ public class Handler {
                 + "WHERE Disabled = '0' "
                 + "AND ContractEndDate < '2018-06-11'";
         
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
     public ResultSet getInProfitNotInAD() {
@@ -85,7 +82,7 @@ public class Handler {
                 + "LEFT JOIN [AD-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE Username_Pre2000 IS NULL ";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
     /**
@@ -100,7 +97,7 @@ public class Handler {
                 + "LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername "
                 + "WHERE EmployeeUsername IS NULL ";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
     public ResultSet getInADnotInClever() {
@@ -111,7 +108,7 @@ public class Handler {
                 + "WHERE pc.[Code] IS NULL  "
                 + "AND ad.[Disabled] != '0'";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
     
     /**
@@ -130,7 +127,7 @@ public class Handler {
                 + "WHERE pc.[Code] = 'Andere Code'  "
                 + "OR pc.[Code] IS NULL";
 
-        return this.doQuery(stmt, query);
+        return this.doQuery(query);
     }
             
     
