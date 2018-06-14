@@ -85,8 +85,8 @@ public class Handler {
     }
     
     /**
-     *  Medewerker uit dienst in Profit, account is in AD actief
-     * 
+     * Signaal 1.2
+     * Medewerker uit dienst in Profit, account is in AD actief
      * @return 
      */
     public ResultSet getUitDienstResult() {
@@ -101,6 +101,13 @@ public class Handler {
         return this.doQuery(query);
     }
     
+    /**
+     *  
+     * Signaal 1.1
+     * Medewerker uit dienst in Profit, account is in AD actief
+     * @return 
+     */
+    
     public ResultSet getInProfitNotInAD() {
         String query;
         query = "select EmployeeUsername "
@@ -113,7 +120,7 @@ public class Handler {
     
     /**
      * AD Account onbekend in Profit
-     * 
+     * 1.3
      * @return 
      */
     public ResultSet getInADNotInProfit() {
@@ -125,6 +132,12 @@ public class Handler {
 
         return this.doQuery(query);
     }
+    
+    /**
+     * AD Account onbekend in Profit
+     * 2.4
+     * @return 
+     */
     
     public ResultSet getInADnotInClever() {
         String query;
@@ -139,19 +152,40 @@ public class Handler {
     
     /**
      * RDS naam in Clevernew is niet ingevuld
-     * Query not yet functional
-     * 
+     * 2.1
      * @return 
      */
     public ResultSet getNoBaAccountForUserInClever() {
         String query;
-        query = "SELECT p.[ID] AS pid "
+        query = "SELECT p.[ID] AS PersoonID "
                 + "FROM [Medewerker] AS m "
                 + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
                 + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
                 + "JOIN [Werkzaam] w ON w.[MedewerkerID] = m.[ID] "
                 + "WHERE pc.[Code] = 'Andere Code'  "
-                + "OR pc.[Code] IS NULL";
+                + "OR pc.[Code] IS NULL "
+                + "AND p.[ID] IS NOT NULL";
+
+        return this.doQuery(query);
+    }
+    
+    /**
+     * RDS naam  in CleverNew bestaat niet in AD
+     * Query not yet functional
+     * 2.2
+     * @return 
+     */
+    public ResultSet getInCleverBaAcNotReal() {
+        String query;
+        query = "SELECT p.[ID] AS personID, pc.[Code] AS BaAccount " +
+            "FROM [Medewerker] AS m " +
+            "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] " +
+            "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] " +
+            "JOIN [Werkzaam] AS w ON w.[MedewerkerID] = m.[ID]" +
+            "WHERE [Code] NOT IN ( " +
+            "SELECT [Username_Pre2000] " +
+            "FROM [AD-Export]) " +
+            "AND [Code] != 'Andere Code'";
 
         return this.doQuery(query);
     }
