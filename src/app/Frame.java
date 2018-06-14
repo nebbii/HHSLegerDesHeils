@@ -40,6 +40,7 @@ public class Frame {
     private Handler handler;
     private JSplitPane mainFrame;
     private JTable mainTable;
+    JFrame jf = new JFrame();
 
     public Frame() throws Exception {
 
@@ -57,7 +58,6 @@ public class Frame {
      * Render the main frame
      */
     public void createMainView() {
-        JFrame jf = new JFrame();
         jf.setSize(864, 576);
         jf.setTitle("Leger Des Heils Database Applicatie");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,6 +88,10 @@ public class Frame {
         buttons[3] = new JButton("getInADnotInClever");
         buttons[4] = new JButton("getNoBaAccountForUserInClever");
         buttons[5] = new JButton("getInCleverBaAcNotReal");
+        buttons[6] = new JButton("getOutOfFunctionInClever");
+        buttons[7] = new JButton("getInProfitNotInClever");
+        buttons[8] = new JButton("getOutOfServiceInProfitButNotClever");
+        buttons[9] = new JButton("getUserInCleverNotInProfit");
         
 
         class ClickListener1 implements ActionListener {
@@ -98,7 +102,6 @@ public class Frame {
                 createMainView();
             }
         }
-
         class ClickListener2 implements ActionListener {
 
             @Override
@@ -107,7 +110,6 @@ public class Frame {
                 createMainView();
             }
         }
-
         class ClickListener3 implements ActionListener {
 
             @Override
@@ -117,7 +119,6 @@ public class Frame {
 
             }
         }
-
         class ClickListener4 implements ActionListener {
 
             @Override
@@ -142,6 +143,38 @@ public class Frame {
                 createMainView();
             }
         }
+        class ClickListener7 implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                mainTable = getQueryToTable(handler.getOutOfFunctionInClever());
+                createMainView();
+            }
+        }
+        class ClickListener8 implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                mainTable = getQueryToTable(handler.getInProfitNotInClever());
+                createMainView();
+            }
+        }
+        class ClickListener9 implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                mainTable = getQueryToTable(handler.getOutOfServiceInProfitButNotClever());
+                createMainView();
+            }
+        }
+        class ClickListener10 implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                mainTable = getQueryToTable(handler.getUserInCleverNotInProfit());
+                createMainView();
+            }
+        }
 
         ActionListener cl1 = new ClickListener1();
         ActionListener cl2 = new ClickListener2();
@@ -149,12 +182,20 @@ public class Frame {
         ActionListener cl4 = new ClickListener4();
         ActionListener cl5 = new ClickListener5();
         ActionListener cl6 = new ClickListener6();
+        ActionListener cl7 = new ClickListener7();
+        ActionListener cl8 = new ClickListener8();
+        ActionListener cl9 = new ClickListener9();
+        ActionListener cl10 = new ClickListener10();
         buttons[0].addActionListener(cl1);
         buttons[1].addActionListener(cl2);
         buttons[2].addActionListener(cl3);
         buttons[3].addActionListener(cl4);
         buttons[4].addActionListener(cl5);
         buttons[5].addActionListener(cl6);
+        buttons[6].addActionListener(cl7);
+        buttons[7].addActionListener(cl8);
+        buttons[8].addActionListener(cl9);
+        buttons[9].addActionListener(cl10);
 
         for (JButton i : buttons) {
             if (i != null) {
