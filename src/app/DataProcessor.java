@@ -131,11 +131,15 @@ public class DataProcessor {
         c10.add("SignalDiscr");
         export(c10, s10, r10);
         System.out.println("DB FILLED");
-        
-        
-        Statement deleteDoubles = connection.createStatement();
-        deleteDoubles.executeQuery("DELETE FROM Signals WHERE");
 
+        Statement deleteDoubles = connection.createStatement();
+        deleteDoubles.execute("DELETE FROM Signals "
+                + "WHERE SignalID NOT IN ("
+                + "SELECT MIN(SignalID) as SignalID "
+                + "FROM Signals "
+                + "GROUP BY UserName, SignalDiscr)");
+        System.out.println("DB CLEAN!!!!!!!!!"); 
+        System.out.println("HET WERKT"); 
     }
 
     private static Document getParameters() throws ParserConfigurationException, SAXException, IOException {
@@ -175,7 +179,7 @@ public class DataProcessor {
     }
 
     public void deleteDoubles() throws SQLException, ParserConfigurationException, SAXException, IOException {
-        
+
         Document document = getParameters();
         String connString = document.getElementsByTagName("ConnectString").item(0).getTextContent();
         String usr = document.getElementsByTagName("Username").item(0).getTextContent();

@@ -28,7 +28,7 @@ import javax.swing.JTextField;
  * @author Ben
  */
 public class App {
-    
+
     public static void main(String[] args) throws Exception {
         JFrame frame = new JFrame("Demo application");
         frame.setSize(300, 150);
@@ -36,8 +36,8 @@ public class App {
 
         JPanel panel = new JPanel();
         frame.add(panel);
-        placeComponents(panel);
-
+        //placeComponents(panel);
+        new Frame();
         frame.setVisible(true);
     }
 
@@ -84,7 +84,7 @@ public class App {
                 } catch (SQLException e) {
                     System.out.print("Mislukt: ");
                     System.out.println(e.getMessage());
-                    JOptionPane.showMessageDialog(loginButton,"Login not correct");
+                    JOptionPane.showMessageDialog(loginButton, "Login not correct");
                 } catch (Exception ex) {
                     Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
