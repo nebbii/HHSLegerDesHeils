@@ -36,8 +36,7 @@ public class App {
 
         JPanel panel = new JPanel();
         frame.add(panel);
-        //placeComponents(panel);
-        new Frame();
+        placeComponents(panel);
         frame.setVisible(true);
     }
 

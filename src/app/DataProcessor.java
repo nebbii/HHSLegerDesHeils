@@ -6,8 +6,12 @@
 package app;
 
 import java.awt.List;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import static java.lang.ProcessBuilder.Redirect.to;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -138,8 +142,6 @@ public class DataProcessor {
                 + "SELECT MIN(SignalID) as SignalID "
                 + "FROM Signals "
                 + "GROUP BY UserName, SignalDiscr)");
-        System.out.println("DB CLEAN!!!!!!!!!"); 
-        System.out.println("HET WERKT"); 
     }
 
     private static Document getParameters() throws ParserConfigurationException, SAXException, IOException {
@@ -190,4 +192,66 @@ public class DataProcessor {
         connection = DriverManager.getConnection(connectionString);
         Statement delete = connection.createStatement();
     }
+
+    public void exporteerCSV() throws SQLException, ParserConfigurationException, SAXException, IOException {
+        Document document = getParameters();
+        String connString = document.getElementsByTagName("ConnectString").item(0).getTextContent();
+        String usr = document.getElementsByTagName("Username").item(0).getTextContent();
+        String pwd = document.getElementsByTagName("Password").item(0).getTextContent();
+        String connectString;
+        String connectionString = connString + ";" + usr + ";" + pwd;
+        try {
+            connection = DriverManager.getConnection(connectionString);
+            connection.setCatalog("SignalDB");
+            System.out.println("Tweede Verbinding Gemaakt");
+        } catch (SQLException e) {
+            System.out.print("Mislukt: ");
+            System.out.println(e.getMessage());
+        }
+        
+        File file = new File("C:\\Users\\willem\\Desktop\\"+ "SignalExport" + ".csv");
+
+        try (FileOutputStream fop = new FileOutputStream(file)) {
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            String query = "SELECT * FROM Signals";
+            stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+
+                int nummerOfColumns = rs.getMetaData().getColumnCount();
+
+                Writer out = new OutputStreamWriter(new BufferedOutputStream(fop));
+
+                for (int i = 1; i < (nummerOfColumns + 1); i++) {
+
+                    out.append(rs.getMetaData().getColumnName(i));
+                    if (i < nummerOfColumns) {
+                        out.append(",");
+                    } else {
+                        out.append("\r\n");
+                    }
+                }
+
+                while (rs.next()) {
+                    for (int i = 1; i < (nummerOfColumns + 1); i++) {
+                        out.append(rs.getString(i));
+                        if (i < nummerOfColumns) {
+                            out.append(",");
+                        } else {
+                            out.append("\r\n");
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
 }

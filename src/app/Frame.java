@@ -44,6 +44,7 @@ public class Frame {
     private JTable mainTable;
     JFrame jf = new JFrame();
     int rowCount;
+    DataProcessor de = new DataProcessor();
 
     public Frame() throws Exception {
 
@@ -88,17 +89,18 @@ public class Frame {
         
         JButton[] buttons = new JButton[25];
 
-        buttons[0] = new JButton("getUitDienstResult");
-        buttons[1] = new JButton("getInProfitNotInAD");
-        buttons[2] = new JButton("getInADNotInProfit");
-        buttons[3] = new JButton("getInADnotInClever");
-        buttons[4] = new JButton("getNoBaAccountForUserInClever");
-        buttons[5] = new JButton("getInCleverBaAcNotReal");
-        buttons[6] = new JButton("getOutOfFunctionInClever");
-        buttons[7] = new JButton("getInProfitNotInClever");
-        buttons[8] = new JButton("getOutOfServiceInProfitButNotClever");
-        buttons[9] = new JButton("getUserInCleverNotInProfit");
-        buttons[10] = new JButton("WriteToNewBD");
+        buttons[0] = new JButton("Medewerker uit dienst in Profit");
+        buttons[1] = new JButton("User in Profit bestaat niet in de AD");
+        buttons[2] = new JButton("AD Account, onbekend in Profit");
+        buttons[3] = new JButton("AD Account, onbekend in Clever");
+        buttons[4] = new JButton("RDS naam in Clevernew is niet ingevuld");
+        buttons[5] = new JButton("RDS naam in CleverNew bestaat niet in AD");
+        buttons[6] = new JButton("Medewerker uit dienst in CleverNew");
+        buttons[7] = new JButton("RDS User naam in Profit bestaat niet in Clever");
+        buttons[8] = new JButton("Medewerker uit dienst in Profit");
+        buttons[9] = new JButton("User in Clever bestaat niet in Afas Profit");
+        buttons[10] = new JButton("Schrijf Signalen naar DB");
+        buttons[11] = new JButton("Exporteer signalen naar CSV");
 
         class ClickListener1 implements ActionListener {
 
@@ -210,6 +212,17 @@ public class Frame {
                 }
             }
         }
+        class ClickListener12 implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    de.exporteerCSV();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
 
         ActionListener cl1 = new ClickListener1();
         ActionListener cl2 = new ClickListener2();
@@ -222,6 +235,7 @@ public class Frame {
         ActionListener cl9 = new ClickListener9();
         ActionListener cl10 = new ClickListener10();
         ActionListener cl11 = new ClickListener11();
+        ActionListener cl12 = new ClickListener12();
         buttons[0].addActionListener(cl1);
         buttons[1].addActionListener(cl2);
         buttons[2].addActionListener(cl3);
@@ -233,6 +247,7 @@ public class Frame {
         buttons[8].addActionListener(cl9);
         buttons[9].addActionListener(cl10);
         buttons[10].addActionListener(cl11);
+        buttons[11].addActionListener(cl12);
         
         list.add(amountOfSignals);
         
