@@ -23,9 +23,6 @@ public class Handler {
 
     Connection conn;
 
-    public Connection getConn() {
-        return conn;
-    }
     String connectString;
     String user;
     String pass;
