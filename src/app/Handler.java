@@ -22,6 +22,10 @@ import java.util.ArrayList;
 public class Handler {
 
     Connection conn;
+
+    public Connection getConn() {
+        return conn;
+    }
     String connectString;
     String user;
     String pass;
@@ -32,7 +36,8 @@ public class Handler {
         String connectionString = connectString + ";" + usr + ";" + pwd;
         try {
             conn = DriverManager.getConnection(connectionString);
-            stmt = conn.createStatement();
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
 
             System.out.println("Verbinding Gemaakt");
         } catch (SQLException e) {
@@ -95,7 +100,7 @@ public class Handler {
 
         query = "select Username_Pre2000 , ContractEndDate"
                 + " from [AD-Export]"
-                + " LEFT JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername"
+                + " JOIN [AfasProfit-Export] ON Username_Pre2000 = EmployeeUsername"
                 + " WHERE Disabled = '0' "
                 + " AND ContractEndDate < '" + date + "'";
         System.out.println(query);
@@ -104,8 +109,8 @@ public class Handler {
 
     /**
      *
-     * Signaal 1.1 Medewerker uit dienst in Profit, account is in AD actief
-     *
+     * Signaal 1.1 
+     *RDS User naam in Profit bestaat niet in de AD
      * @return
      */
     public ResultSet getInProfitNotInAD() {
@@ -134,7 +139,7 @@ public class Handler {
     }
 
     /**
-     * AD Account onbekend in Profit 2.4
+     * AD Account onbekend in Clever 2.4
      *
      * @return
      */
@@ -191,7 +196,7 @@ public class Handler {
      */
     public ResultSet getOutOfFunctionInClever() {
         String query;
-        query = "SELECT pc.[Code] AS BaAccount, p.[ID] AS personID "
+        query = "SELECT pc.[Code] AS BaAccount, pc.[Einddatum] "
                 + "FROM [Medewerker] AS m "
                 + "JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] "
                 + "JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID] "
@@ -210,7 +215,7 @@ public class Handler {
      */
     public ResultSet getInProfitNotInClever() {
         String query;
-        query = "SELECT a.[EmployeeUsername] AS [baAccount] "
+        query = "SELECT a.[EmployeeUsername] AS [BaAccount] "
                 + "FROM [AfasProfit-Export] AS a "
                 + "WHERE a.[EmployeeUsername] NOT IN (SELECT pc.[Code] FROM [Medewerker] AS m JOIN [Persoon] AS p ON m.[PersoonID] = p.[ID] JOIN [PersoonCodes] AS pc ON p.[ID] = pc.[PersoonID]) ";
         return this.doQuery(query);
@@ -247,7 +252,7 @@ public class Handler {
                 + "JOIN [PersoonCodes] AS pc ON pc.[PersoonID] = p.[ID] "
                 + "WHERE pc.[Code] != 'Andere Code' "
                 + "AND pc.[Code] NOT IN (SELECT a.[EmployeeUsername] FROM [AfasProfit-Export] AS a)";
-                
+
         return this.doQuery(query);
     }
 

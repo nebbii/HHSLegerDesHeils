@@ -14,6 +14,6 @@ public class App {
     
     public static void main(String[] args) throws Exception {
         // get parameters
-        Frame b = new Frame();
+        new Frame();
     }
 }
