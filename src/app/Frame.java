@@ -71,7 +71,7 @@ public class Frame {
         OptionList.add(testButton);
         
         // Right Main area
-        JTable mainTable = this.getQueryToTable(handler.getInADNotInProfit());
+        JTable mainTable = this.getQueryToTable(handler.getUitDienstResult());
         JScrollPane ScrollTable = new JScrollPane(mainTable);
         
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
